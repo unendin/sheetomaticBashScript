@@ -3,7 +3,7 @@
 # App copies new run diaries (log files) to Google Drive folder
 # and launches Google Drive app
 # 
-# Launch from MATLAB with eg, unix(['/Users/yul/sheetomatic.sh'])
+# Launch from MATLAB with eg, unix(['/Users/yul/Google\ Drive/sheetomaticBashScript/sheetomatic.sh'])
 
 ##########################
 # CONFIGURE
@@ -18,7 +18,7 @@ driveSyncWindow=10
 user="$(echo $USER)"
 
 # Directory containing original logs
-sourceDir="/Users/$user/Dropbox/CodeNData/Data/Shadlen/+MDD/+expr/"
+sourceDir="/Users/$user/Dropbox/CodeNData/Data/Shadlen/+MDD/+expr"
 
 # Destination Google Drive directory
 destinationDir="/Users/$user/Google Drive/logs"
@@ -51,13 +51,14 @@ fi
 touch -t "$modifiedSince" /tmp/logTimestamp
 
 # Find and copy relevant log files
-fileList=find "$sourceDir" -not -regex "$notRegex" -regex "$regex" -exec cp {} "$destinationDir" \;
+find "$sourceDir" -not -regex "$notRegex" -regex "$regex"
+find "$sourceDir" -not -regex "$notRegex" -regex "$regex" -exec cp {} "$destinationDir" \;
 
 ##########################
 # REPORT 
 
 # Display copied filenames  
-find "$destinationDir" -newer /tmp/logTimestamp -regex "$regex"
+# find "$destinationDir" -newer /tmp/logTimestamp -regex "$regex"
 
 # Persist time of execution to restrict further copies to new files
 modifiedSince="$(date "+%Y%m%d%H%M.%S")"
