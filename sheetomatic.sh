@@ -1,9 +1,9 @@
 #!/bin/bash
-#	sheetomatic.sh
-#   App copies new run diaries (log files) to Google Drive folder
-#   and launches Google Drive app
+# sheetomatic.sh
+# App copies new run diaries (log files) to Google Drive folder
+# and launches Google Drive app
 # 
-# 	Launch from MATLAB with eg, unix(['/Users/yul/sheetomatic.sh'])
+# Launch from MATLAB with eg, unix(['/Users/yul/sheetomatic.sh'])
 
 ##########################
 # CONFIGURE
@@ -14,19 +14,29 @@ driveApp='/Applications/Google Drive.app'
 # Google Drive app sync time, after which process is killed
 driveSyncWindow=10
 
+# Current user environment for purposes of defining directories
+user="$(echo $USER)"
+
 # Directory containing original logs
-sourceDir='/Users/ted/Desktop/logs'
+sourceDir="/Users/$user/Dropbox/CodeNData/Data/Shadlen/+MDD/+expr/"
 
 # Destination Google Drive directory
-destinationDir='/Users/ted/Google Drive/logDest'
+destinationDir="/Users/$user/Google Drive/logs"
 
-# Regex to match diary filenames only
-regex='.*txt.*'
+# Regexes to match diary filenames only and exclude json variants.
+# Note: 'find' command does not support lookbehind to do both regexes in one
+regex='.*diary_.*.txt'
+notRegex='.*diary_.*json.txt' 
 
 # Restrict to log files modified since last execution
 if [ -f /tmp/sheetomatic.txt ]; then
     read modifiedSince < /tmp/sheetomatic.txt
+
+    # testing
+    # modifiedSince="$(date  -v-5d "+%Y%m%d%H%M.%S")"
+
     echo "Last execution time: $modifiedSince."
+
 # In the absence of stored execution date, restrict search to files 
 # modified within last 24hr
 else
@@ -41,7 +51,7 @@ fi
 touch -t "$modifiedSince" /tmp/logTimestamp
 
 # Find and copy relevant log files
-find "$sourceDir" -newer /tmp/logTimestamp -regex "$regex" -exec cp {} "$destinationDir" \;
+fileList=find "$sourceDir" -not -regex "$notRegex" -regex "$regex" -exec cp {} "$destinationDir" \;
 
 ##########################
 # REPORT 
