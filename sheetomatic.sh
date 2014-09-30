@@ -7,6 +7,12 @@
 # Launch from MATLAB with eg, 
 # unix(['/Users/yul/Google\ Drive/sheetomaticBashScript/sheetomatic.sh'])
 
+scriptName=$0
+function usage {
+    echo "usage: $scriptName [-t]"
+    echo "	-t		use test settings"
+    exit 1
+}
 
 ##########################
 # CONFIGURE
@@ -34,8 +40,8 @@ if [ -z "$1" ]; then
 		echo "No record of previous execution time. Copying logs modified since: $modifiedSince"
 	fi
 
-# TEST settings. Invoked by "testing" argument
-elif [ $1 == "testing" ]; then
+# TEST settings. Invoked by -t argument
+elif [ $1 == "-t" ]; then
 	echo "TESTING TESTING TESTING"
 
 	# Short time before quitting drive app
@@ -50,8 +56,8 @@ elif [ $1 == "testing" ]; then
 
 # EXIT if unexpected argument passed
 else 
-	echo "Argument $1 not recognized. Exiting ..."	
-	exit
+	echo "Argument $1 not recognized."	
+	usage
 fi
 
 # UNIVERSAL settings
