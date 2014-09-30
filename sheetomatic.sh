@@ -5,6 +5,7 @@
 # 
 # Launch from MATLAB with eg, unix(['/Users/yul/Google\ Drive/sheetomaticBashScript/sheetomatic.sh'])
 
+
 ##########################
 # CONFIGURE
 
@@ -67,8 +68,9 @@ notRegex='.*diary_.*json.txt'
 # Set date range for file search
 touch -t "$modifiedSince" /tmp/logTimestamp
 
-# Find and copy relevant log files
-find "$sourceDir" -newer /tmp/logTimestamp -not -regex "$notRegex" -regex "$regex" -exec cp {} "$destinationDir" \;  
+# Find and copy relevant log files. 
+# Play safe with -n to prevent overwrites
+find "$sourceDir" -newer /tmp/logTimestamp -not -regex "$notRegex" -regex "$regex" -exec cp -n {} "$destinationDir" \;  
 
 # for terminal display TODO: non-redundant
 find "$sourceDir" -newer /tmp/logTimestamp -not -regex "$notRegex" -regex "$regex" 
