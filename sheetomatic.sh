@@ -1,9 +1,11 @@
 #!/bin/bash
 # sheetomatic.sh
+#
 # App copies new run diaries (log files) to Google Drive folder
-# and launches Google Drive app
+# and launches (then kills) Google Drive app
 # 
-# Launch from MATLAB with eg, unix(['/Users/yul/Google\ Drive/sheetomaticBashScript/sheetomatic.sh'])
+# Launch from MATLAB with eg, 
+# unix(['/Users/yul/Google\ Drive/sheetomaticBashScript/sheetomatic.sh'])
 
 
 ##########################
