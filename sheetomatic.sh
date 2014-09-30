@@ -63,7 +63,7 @@ regex='.*diary_.*.txt'
 notRegex='.*diary_.*json.txt' 
 
 ##########################
-# COPY TO DRIVE FOLDER 
+# COPY NEW DIARIES TO DRIVE FOLDER 
 
 # Set date range for file search
 touch -t "$modifiedSince" /tmp/logTimestamp
@@ -78,7 +78,7 @@ find "$sourceDir" -newer /tmp/logTimestamp -not -regex "$notRegex" -regex "$rege
 ##########################
 # STORE STATE 
 
-# Persist time of execution to restrict further copies to new files
+# Persist time of execution to restrict subsequent copies to new files
 modifiedSince="$(date "+%Y%m%d%H%M.%S")"
 echo $modifiedSince > /tmp/sheetomatic.txt
 
@@ -86,7 +86,7 @@ echo $modifiedSince > /tmp/sheetomatic.txt
 ##########################
 # SYNC W/GOOGLE
 
-# If files are copied, start Google Drive app, wait, then quit
+# If files were found, start Google Drive app, wait, then quit TODO: robustify
 if [[ -n $(find "$sourceDir" -newer /tmp/logTimestamp -not -regex "$notRegex" -regex "$regex") ]]; then
 	echo "Launching Google Drive App ..."
 	open -a "$driveApp"
