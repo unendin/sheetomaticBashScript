@@ -9,10 +9,10 @@
 # CONFIGURE
 
 # TEST flag
-testing='false'
+testing="false"
 
 # TEST settings
-if [ $testing='true' ]; then
+if [ "$testing" == "true" ]; then
 	echo "TESTING TESTING TESTING"
 
 	# Shorten time before quitting drive app
@@ -31,7 +31,7 @@ else
 	driveSyncWindow=120	
 
 	# Destination Google Drive directory
-	destinationDir="/Users/$user/Google Drive/logs"
+	destinationDir="/Users/$user/Google Drive/logsTest"
 
 	# Restrict to log files modified since last execution
 	if [ -f /tmp/sheetomatic.txt ]; then
