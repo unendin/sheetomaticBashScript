@@ -19,7 +19,7 @@ testing="false"
 if [ "$testing" == "true" ]; then
 	echo "TESTING TESTING TESTING"
 
-	# Shorten time before quitting drive app
+	# Short time before quitting drive app
 	driveSyncWindow=10
 
 	# Destination Google Drive directory
@@ -31,7 +31,7 @@ if [ "$testing" == "true" ]; then
 
 # PRODUCTION settings
 else
-	# Google Drive app sync time, after which process is killed
+	# Google Drive app sync time (in seconds), after which process is killed
 	driveSyncWindow=120	
 
 	# Destination Google Drive directory
