@@ -12,25 +12,8 @@
 # Current user environment for purposes of defining directories
 user="$(echo $USER)"
 
-# TEST flag
-testing="false"
-
-# TEST settings
-if [ "$testing" == "true" ]; then
-	echo "TESTING TESTING TESTING"
-
-	# Short time before quitting drive app
-	driveSyncWindow=10
-
-	# Destination Google Drive directory
-	destinationDir="/Users/$user/Google Drive/logsTest"
-
-	# Artificially set modified date back
-	modifiedSince="$(date  -v-5d "+%Y%m%d%H%M.%S")"
-	echo "Last execution time set to 5 days ago: $modifiedSince."
-
-# PRODUCTION settings
-else
+# PRODUCTION settings. Default when no argument passed to script
+if [ -z "$1" ]; then
 	# Google Drive app sync time (in seconds), after which process is killed
 	driveSyncWindow=120	
 
@@ -48,6 +31,25 @@ else
 		modifiedSince="$(date  -v-1d "+%Y%m%d%H%M.%S")"
 		echo "No record of previous execution time. Copying logs modified since: $modifiedSince"
 	fi
+
+# TEST settings. Invoked by "testing" argument
+elif [ $1 == "testing" ]; then
+	echo "TESTING TESTING TESTING"
+
+	# Short time before quitting drive app
+	driveSyncWindow=10
+
+	# Destination Google Drive directory
+	destinationDir="/Users/$user/Google Drive/logsTest"
+
+	# Artificially set modified date back
+	modifiedSince="$(date  -v-5d "+%Y%m%d%H%M.%S")"
+	echo "Last execution time set to 5 days ago: $modifiedSince."
+
+# EXIT if unexpected argument passed
+else 
+	echo "Argument $1 not recognized. Exiting ..."	
+	exit
 fi
 
 # UNIVERSAL settings
