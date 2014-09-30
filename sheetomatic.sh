@@ -8,6 +8,9 @@
 ##########################
 # CONFIGURE
 
+# Current user environment for purposes of defining directories
+user="$(echo $USER)"
+
 # TEST flag
 testing="false"
 
@@ -31,7 +34,7 @@ else
 	driveSyncWindow=120	
 
 	# Destination Google Drive directory
-	destinationDir="/Users/$user/Google Drive/logsTest"
+	destinationDir="/Users/$user/Google Drive/logs"
 
 	# Restrict to log files modified since last execution
 	if [ -f /tmp/sheetomatic.txt ]; then
@@ -47,9 +50,6 @@ else
 fi
 
 # UNIVERSAL settings
-# Current user environment for purposes of defining directories
-user="$(echo $USER)"
-
 # Google Drive app location
 driveApp='/Applications/Google Drive.app'
 
@@ -74,10 +74,7 @@ find "$sourceDir" -newer /tmp/logTimestamp -not -regex "$notRegex" -regex "$rege
 find "$sourceDir" -newer /tmp/logTimestamp -not -regex "$notRegex" -regex "$regex" 
 
 ##########################
-# REPORT 
-
-# Display copied filenames  
-# find "$destinationDir" -newer /tmp/logTimestamp -regex "$regex"
+# STORE STATE 
 
 # Persist time of execution to restrict further copies to new files
 modifiedSince="$(date "+%Y%m%d%H%M.%S")"
