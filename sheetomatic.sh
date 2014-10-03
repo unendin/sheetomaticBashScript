@@ -7,10 +7,13 @@
 # Launch from MATLAB with eg, 
 # unix(['/Users/yul/Google\ Drive/sheetomaticBashScript/sheetomatic.sh'])
 
+##########################
+# USAGE
+
 scriptName=$0
 function usage {
     echo "usage: $scriptName [-t]"
-    echo "	-t		use test settings"
+    echo "	-t		Use test settings"
     exit 1
 }
 
@@ -29,8 +32,8 @@ if [ -z "$1" ]; then
 	destinationDir="/Users/$user/Google Drive/logs"
 
 	# Restrict to log files modified since last execution
-	if [ -f /tmp/sheetomatic.txt ]; then
-		read modifiedSince < /tmp/sheetomatic.txt
+	if [ -f /tmp/sheetomatic ]; then
+		read modifiedSince < /tmp/sheetomatic
 		echo "Previous execution time: $modifiedSince."
 
 	# In the absence of stored execution date, restrict search to files 
@@ -42,6 +45,7 @@ if [ -z "$1" ]; then
 
 # TEST settings. Invoked by -t argument
 elif [ $1 == "-t" ]; then
+
 	echo "TESTING TESTING TESTING"
 
 	# Short time before quitting drive app
@@ -51,8 +55,8 @@ elif [ $1 == "-t" ]; then
 	destinationDir="/Users/$user/Google Drive/logsTest"
 
 	# Artificially set modified date back
-	modifiedSince="$(date  -v-5d "+%Y%m%d%H%M.%S")"
-	echo "Last execution time set to 5 days ago: $modifiedSince."
+	modifiedSince="$(date  -v-14d "+%Y%m%d%H%M.%S")"
+	echo "Last execution time set to 14 days ago: $modifiedSince."
 
 # EXIT if unexpected argument passed
 else 
@@ -76,36 +80,35 @@ notRegex='.*diary_.*json.txt'
 # COPY NEW DIARIES TO DRIVE FOLDER 
 
 # Set date range for file search
-touch -t "$modifiedSince" /tmp/logTimestamp
+touch -t "$modifiedSince" /tmp/sheetomaticTimestamp
 
 # Find and copy relevant log files. 
 # Play safe with -n to prevent overwrites
-find "$sourceDir" -newer /tmp/logTimestamp -not -regex "$notRegex" -regex "$regex" -exec cp -n {} "$destinationDir" \;  
+echo "Finding and copying log files modified since previous execution ..."  
+find "$sourceDir" -newer /tmp/sheetomaticTimestamp -not -regex "$notRegex" -regex "$regex" | xargs -I {} cp -vn {} "$destinationDir"
 
-# for terminal display TODO: non-redundant
-find "$sourceDir" -newer /tmp/logTimestamp -not -regex "$notRegex" -regex "$regex" 
 
 ##########################
 # STORE STATE 
 
 # Persist time of execution to restrict subsequent copies to new files
 modifiedSince="$(date "+%Y%m%d%H%M.%S")"
-echo $modifiedSince > /tmp/sheetomatic.txt
+echo $modifiedSince > /tmp/sheetomatic
 
 
 ##########################
 # SYNC W/GOOGLE
 
-# If files were found, start Google Drive app, wait, then quit TODO: robustify
-if [[ -n $(find "$sourceDir" -newer /tmp/logTimestamp -not -regex "$notRegex" -regex "$regex") ]]; then
+# If new files in Google Drive directory, start Google Drive app, wait, then quit TODO: robustify
+if [[ -n $(find "$destinationDir" -newer /tmp/sheetomaticTimestamp) ]]; then
 	echo "Launching Google Drive App ..."
 	open -a "$driveApp"
 	echo "Waiting $driveSyncWindow seconds for Google Drive to sync ..."	
 	sleep $driveSyncWindow
 	echo "Quitting Google Drive	..."	
 	osascript -e 'tell application "Google Drive" to quit'
-	echo "Done"
+	echo "Done."
 else
-    printf "No new log files.\nExiting without launching Google Drive\n"
+    printf "No new log files to copy.\nExiting without launching Google Drive."
 fi
 
