@@ -13,8 +13,8 @@
 scriptName=$0
 function usage {
     echo "usage: $scriptName [Int] [noSync] ["
-    echo "	Int		How far back to look for log files (in number of days)"
-    echo "	noSync  Do not launch Google Drive app. Must be used with Int or blank first argumnent, eg, sheetomatic \"\" noSync"
+    echo "	Int          How far back to look for log files (in number of days)"
+    echo "	noSync       Do not launch Google Drive app. Must be used with Int or blank first argumnent, eg, sheetomatic \"\" noSync"
     exit 1
 }
 
@@ -61,7 +61,7 @@ fi
 # Current user environment for purposes of defining directories
 
 # Use number of days specified in command argument
-if [ "$1" -gt "0" ]; then	
+if [[ "$1" -gt 0 ]]; then	
 	# Artificially set modified date back
 	modifiedSince="$(date  -v-"$1"d "+%Y%m%d%H%M.%S")"
 	printf  "Looking for logs modified in last "$1" days ...\n"
@@ -75,7 +75,7 @@ elif [ -f /tmp/sheetomatic ]; then
 # modified within last 24hr
 else
 	modifiedSince="$(date  -v-1d "+%Y%m%d%H%M.%S")"
-	printf "No record of previous execution time.\nLooking logs modified since: $modifiedSince\n"
+	printf "No record of previous execution time.\nLooking logs modified since: $modifiedSince ... \n"
 fi
 
 
@@ -87,7 +87,7 @@ touch -t "$modifiedSince" /tmp/sheetomaticTimestamp
 
 # Find and copy relevant log files. 
 # Play safe with -n to prevent overwrites
-find "$sourceDir" -newer /tmp/sheetomaticTimestamp -not -regex "$notRegex" -regex "$regex" | xargs -I {} cp -v {} "$destinationDir" | tee /tmp/sheetomaticLog
+find "$sourceDir" -newer /tmp/sheetomaticTimestamp -not -regex "$notRegex" -regex "$regex" | xargs -I {} cp -vn {} "$destinationDir" | tee /tmp/sheetomaticLog
 
 # Check if new files present in destination dir
 read sheetomaticLog < /tmp/sheetomaticLog
